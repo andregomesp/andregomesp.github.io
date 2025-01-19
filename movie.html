@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Selector</title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    display: flex;
+}
+
+body {
+    flex-direction: column;
+}
+
+.container {
+    display: flex;
+    width: 100vw;
+    height: 100%;
+}
+
+.movie_selector {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #ccc;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s, border-color 0.3s, background-color 0.3s;
+}
+
+.movie_selector img {
+    width: 30%;
+    height: 40%;
+    object-fit: fill;
+    transition: transform 0.3s, filter 0.3s, margin-bottom 0.3s ease;
+    filter: brightness(0.7); /* Gray layer at 30% opacity */
+}
+
+.movie_selector p {
+    margin-top: 20px; /* Ensure enough space for image growth */
+    font-size: 16px;
+    text-align: center;
+    color: #333;
+    transition: margin-top 0.3s ease; /* Smooth movement of text */
+}
+
+/* Hover feedback */
+.movie_selector:hover img {
+    transform: scale(1.1); /* Slightly larger */
+}
+
+.movie_selector:hover p {
+    margin-top: 30px; /* Adjust text position on hover */
+}
+
+/* Selected feedback */
+.movie_selector.selected img {
+    transform: scale(1.2); /* Larger on selection */
+    filter: brightness(1); /* Remove gray layer */
+}
+
+.movie_selector.selected p {
+    margin-top: 40px; /* Adjust text position for selected state */
+}
+
+.movie_selector.selected {
+    border-color: blue;
+    background-color: transparent;
+}
+
+/* Smooth animations */
+.movie_selector img,
+.movie_selector.selected img {
+    transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="movie_selector" tabindex="0" data-index="0" data-url="https://www.dailymotion.com/video/x7u28ym">
+            <img src="natalie_wood.jpg" alt="West Side Story">
+            <p>"Romeu e Julieta com gangues"</p>
+        </div>
+        <div class="movie_selector" tabindex="0" data-index="1" data-url="https://www.dailymotion.com/video/x83eks1">
+            <img src="barbra_streisand.webp" alt="Funny Girl">
+            <p>"A trajetória de uma comediante talentosa"</p>
+        </div>
+    </div>
+
+    <script>
+        const movieSelectors = document.querySelectorAll('.movie_selector');
+        let currentIndex = 0; // Tracks the currently selected index
+
+        // Set the initial selection
+        updateSelection();
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight') {
+                currentIndex = (currentIndex + 1) % movieSelectors.length; // Move right
+                updateSelection();
+            } else if (event.key === 'ArrowLeft') {
+                currentIndex = (currentIndex - 1 + movieSelectors.length) % movieSelectors.length; // Move left
+                updateSelection();
+            } else if (event.key === 'Enter') {
+                openLink();
+            }
+        });
+
+        // Mouse interactions
+        movieSelectors.forEach((div, index) => {
+            div.addEventListener('mouseover', () => {
+                clearSelection();
+                div.classList.add('selected');
+            });
+
+            div.addEventListener('click', () => {
+                clearSelection();
+                div.classList.add('selected');
+                currentIndex = index;
+                openLink();
+            });
+        });
+
+        // Update the selection
+        function updateSelection() {
+            clearSelection();
+            movieSelectors[currentIndex].classList.add('selected');
+            movieSelectors[currentIndex].focus(); // Move focus to the selected element
+        }
+
+        // Clear all selections
+        function clearSelection() {
+            movieSelectors.forEach(div => div.classList.remove('selected'));
+        }
+
+        // Open link for the currently selected movie
+        function openLink() {
+            const url = movieSelectors[currentIndex].dataset.url;
+            window.location.href = url;
+        }
+    </script>
+</body>
+</html>
